@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.GoodsDAO">
+	<resultMap type="goods" id="goodsMap">
+		<id property="goodsid" column="goodsid" />
+		<result property="goodsname" column="goodsname" />
+		<result property="kindid" column="kindid" />
+		<result property="image" column="image" />
+		<result property="price" column="price" />
+		<result property="contents" column="contents" />
+		<result property="kindname" column="kindname" />
+	</resultMap>
+	
+	<insert id="insertGoods" parameterType="goods">
+		insert into goods(goodsid , goodsname , kindid , image , price , contents )
+		values(#{goodsid} , #{goodsname} , #{kindid} , #{image} , #{price} ,
+		#{contents} )
+	</insert>
+	
+	<update id="updateGoods" parameterType="goods">
+		update goods set goodsname=#{goodsname} , kindid=#{kindid} , image=#{image}
+		, price=#{price} , contents=#{contents} where goodsid=#{goodsid}
+	</update>
+	
+	<delete id="deleteGoods" parameterType="String">
+		delete from goods where goodsid = #{goodsid}
+	</delete>
+	
+	<select id="getAllGoods" resultMap="goodsMap" useCache="true">
+		select a.* , b.kindname from goods a , kind b where 1=1 and a.kindid =
+		b.kindid order by goodsid desc
+	</select>
+	
+	<select id="getGoodsById" parameterType="String" resultMap="goodsMap" useCache="true">
+		select a.* , b.kindname from goods a , kind b where 1=1 and a.kindid =
+		b.kindid and goodsid=#{goodsid} order by goodsid desc
+	</select>
+	
+	<select id="getGoodsByCond" parameterType="goods" resultMap="goodsMap" useCache="true">
+		select a.* , b.kindname from goods a , kind b where 1=1 and a.kindid =
+		b.kindid
+		<if test="goodsname != null and '' != goodsname">
+			and a.goodsname = #{goodsname}
+		</if>
+		<if test="kindid != null and '' != kindid">
+			and a.kindid = #{kindid}
+		</if>
+		<if test="image != null and '' != image">
+			and a.image = #{image}
+		</if>
+		<if test="price != null and '' != price">
+			and a.price = #{price}
+		</if>
+		<if test="contents != null and '' != contents">
+			and a.contents = #{contents}
+		</if>
+	</select>
+	
+	<select id="getGoodsByLike" parameterType="goods" resultMap="goodsMap" useCache="true">
+		select a.* , b.kindname from goods a , kind b where 1=1 and a.kindid =
+		b.kindid
+		<if test="goodsname != null and '' != goodsname">
+			and a.goodsname like CONCAT('%', CONCAT(#{goodsname}, '%'))
+		</if>
+		<if test="kindid != null and '' != kindid">
+			and a.kindid like CONCAT('%', CONCAT(#{kindid}, '%'))
+		</if>
+		<if test="image != null and '' != image">
+			and a.image like CONCAT('%', CONCAT(#{image}, '%'))
+		</if>
+		<if test="price != null and '' != price">
+			and a.price like CONCAT('%', CONCAT(#{price}, '%'))
+		</if>
+		<if test="contents != null and '' != contents">
+			and a.contents like CONCAT('%', CONCAT(#{contents}, '%'))
+		</if>
+	</select>
+</mapper>
+
+

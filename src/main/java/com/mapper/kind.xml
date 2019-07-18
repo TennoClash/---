@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.KindDAO">
+	<resultMap type="kind" id="kindMap">
+		<id property="kindid" column="kindid" />
+		<result property="kindname" column="kindname" />
+	</resultMap>
+	
+	<insert id="insertKind" parameterType="kind">
+		insert into kind(kindid , kindname ) values(#{kindid} , #{kindname} )
+	</insert>
+	
+	<update id="updateKind" parameterType="kind">
+		update kind set kindname=#{kindname} where kindid=#{kindid}
+	</update>
+	
+	<delete id="deleteKind" parameterType="String">
+		delete from kind where kindid = #{kindid}
+	</delete>
+	
+	<select id="getAllKind" resultMap="kindMap" useCache="true">
+		select a.* from kind a where 1=1 order by kindid desc
+	</select>
+	
+	<select id="getKindById" parameterType="String" resultMap="kindMap" useCache="true">
+		select a.* from kind a where 1=1 and kindid=#{kindid} order by kindid
+		desc
+	</select>
+	
+	<select id="getKindByCond" parameterType="kind" resultMap="kindMap" useCache="true">
+		select a.* from kind a where 1=1
+		<if test="kindname != null and '' != kindname">
+			and a.kindname = #{kindname}
+		</if>
+	</select>
+	
+	<select id="getKindByLike" parameterType="kind" resultMap="kindMap" useCache="true">
+		select a.* from kind a where 1=1
+		<if test="kindname != null and '' != kindname">
+			and a.kindname like CONCAT('%', CONCAT(#{kindname}, '%'))
+		</if>
+	</select>
+</mapper>
+
+

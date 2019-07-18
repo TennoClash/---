@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.BookDAO">
+	<resultMap type="book" id="bookMap">
+		<id property="bookid" column="bookid" />
+		<result property="bookno" column="bookno" />
+		<result property="cateid" column="cateid" />
+		<result property="addtime" column="addtime" />
+		<result property="money" column="money" />
+		<result property="adminid" column="adminid" />
+		<result property="memo" column="memo" />
+		<result property="catename" column="catename" />
+		<result property="realname" column="realname" />
+		<result property="way" column="way" />
+	</resultMap>
+	
+	<insert id="insertBook" parameterType="book">
+		insert into book(bookid ,
+		bookno , cateid , addtime , money , adminid , memo
+		) values(#{bookid} ,
+		#{bookno} , #{cateid} , #{addtime} , #{money} ,
+		#{adminid} , #{memo} )
+	</insert>
+	
+	<update id="updateBook" parameterType="book">
+		update book set
+		bookno=#{bookno} , cateid=#{cateid} , addtime=#{addtime} ,
+		money=#{money} , adminid=#{adminid} , memo=#{memo} where
+		bookid=#{bookid}
+	</update>
+	
+	<delete id="deleteBook" parameterType="String">
+		delete from book where
+		bookid = #{bookid}
+	</delete>
+	
+	<select id="getAllBook" resultMap="bookMap"  useCache="true">
+		select a.* , b.catename ,
+		b.way ,
+		c.realname from book a , cate b , admin c where
+		1=1 and a.cateid
+		=
+		b.cateid and a.adminid = c.adminid order by bookid
+		desc
+	</select>
+	
+	<select id="getBookById" parameterType="String" resultMap="bookMap"  useCache="true">
+		select a.* , b.catename , b.way , c.realname from book a , cate b ,
+		admin c
+		where 1=1 and a.cateid = b.cateid and a.adminid = c.adminid and
+		bookid=#{bookid} order by bookid desc
+	</select>
+	
+	<select id="getBookByCond" parameterType="book" resultMap="bookMap"  useCache="true">
+		select a.* , b.catename , b.way , c.realname from book a , cate b ,
+		admin c
+		where 1=1 and a.cateid = b.cateid and a.adminid = c.adminid
+		<if test="bookno != null and '' != bookno">
+			and a.bookno = #{bookno}
+		</if>
+		<if test="cateid != null and '' != cateid">
+			and a.cateid = #{cateid}
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime = #{addtime}
+		</if>
+		<if test="money != null and '' != money">
+			and a.money = #{money}
+		</if>
+		<if test="adminid != null and '' != adminid">
+			and a.adminid = #{adminid}
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo = #{memo}
+		</if>
+		<if test="way != null and '' != way">
+			and b.way = #{way}
+		</if>
+	</select>
+	
+	<select id="getBookByLike" parameterType="book" resultMap="bookMap"  useCache="true">
+		select a.* , b.catename , b.way , c.realname from book a , cate b ,
+		admin c
+		where 1=1 and a.cateid = b.cateid and a.adminid = c.adminid
+		<if test="bookno != null and '' != bookno">
+			and a.bookno like CONCAT('%', CONCAT(#{bookno}, '%'))
+		</if>
+		<if test="cateid != null and '' != cateid">
+			and a.cateid like CONCAT('%', CONCAT(#{cateid}, '%'))
+		</if>
+		<if test="addtime != null and '' != addtime">
+			and a.addtime like CONCAT('%', CONCAT(#{addtime}, '%'))
+		</if>
+		<if test="money != null and '' != money">
+			and a.money like CONCAT('%', CONCAT(#{money}, '%'))
+		</if>
+		<if test="adminid != null and '' != adminid">
+			and a.adminid like CONCAT('%', CONCAT(#{adminid}, '%'))
+		</if>
+		<if test="memo != null and '' != memo">
+			and a.memo like CONCAT('%', CONCAT(#{memo}, '%'))
+		</if>
+	</select>
+</mapper>
